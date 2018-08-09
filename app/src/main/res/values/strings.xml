@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">RGG App</string>
+    <string name="title_activity_tabbed_test">TabbedActivityTest</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="training_times">Training Times</string>
+    <string name="events">Events</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_directive">Directive</string>
+    <string name="action_contact">Contact</string>
+</resources>
