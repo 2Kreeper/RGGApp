@@ -13,6 +13,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -34,6 +35,7 @@ public class TrainingCalendarView extends View {
 	private Paint hourLabelPaint, hourLineDividerPaint;
 
 	private GestureDetectorCompat gestureDetector;
+	private ArrayList<ITrainingTouchListener> trainingTouchListeners = new ArrayList<>();
 
 	public TrainingCalendarView(Context context, @Nullable AttributeSet attrs) {
 		super(context, attrs);
@@ -185,6 +187,10 @@ public class TrainingCalendarView extends View {
 		invalidate();
 	}
 
+	public void addTrainingTouchListener(ITrainingTouchListener listener) {
+		trainingTouchListeners.add(listener);
+	}
+
 	private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
 		@Override
@@ -192,7 +198,9 @@ public class TrainingCalendarView extends View {
 			Training training = getAt(e.getX(), e.getY());
 
 			if(training != null) {
-				Log.v(MainActivity.LOG_TAG, String.format("Touched training: from %s to %s", training.getStartTime().getTime(), training.getEndTime().getTime()));
+				for(ITrainingTouchListener listener : trainingTouchListeners) {
+					listener.onTrainingTouch(training, e);
+				}
 				return true;
 			}
 
