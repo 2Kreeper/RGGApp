@@ -6,12 +6,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 import eu.barononline.rggapp.MainActivity;
@@ -29,8 +31,9 @@ public class TrainingCalendarView extends View {
 
 	private int minHour, maxHour;
 	private float trainingHeight, trainingWidth;
-
 	private Paint hourLabelPaint, hourLineDividerPaint;
+
+	private GestureDetectorCompat gestureDetector;
 
 	public TrainingCalendarView(Context context, @Nullable AttributeSet attrs) {
 		super(context, attrs);
@@ -42,6 +45,8 @@ public class TrainingCalendarView extends View {
 		hourLineDividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		hourLineDividerPaint.setStrokeWidth(2);
 		hourLineDividerPaint.setColor(Color.GRAY);
+
+		gestureDetector = new GestureDetectorCompat(getContext(), new GestureListener());
 
 		refresh(null);
 	}
@@ -90,13 +95,17 @@ public class TrainingCalendarView extends View {
 		drawTrainings(canvas, getPaddingLeft() + hourLabelPaint.getTextSize() * 2f - 1, width - getPaddingRight(), hourLabelPaint.getTextSize() / 2f + 5, height - (hourLabelPaint.getTextSize() / 2f));
 	}
 
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		gestureDetector.onTouchEvent(event);
+		return super.onTouchEvent(event);
+	}
+
 	private void drawTrainings(Canvas canvas, float minX, float maxX, float minY, float maxY) {
 		int dayIndex = 0;
 		for(TrainingDay day : trainingWeek.getTrainingDays()) {
 			int trainingIndex = 0;
 			for(Training training : day.getTrainings()) {
-				Log.v(MainActivity.LOG_TAG, String.format("Drawing from %s \n\tto %s", training.getStartTime().getTime().toString(), training.getEndTime().getTime().toString()));
-
 				training.getDrawable().onDraw(canvas, minX + dayIndex * trainingWidth,
 						getHourDrawY(DateUtil.getHours(training.getStartTime())) - hourLabelPaint.getTextSize() * 0.5f,
 						trainingWidth,
@@ -133,6 +142,18 @@ public class TrainingCalendarView extends View {
 		trainingWidth = (width - getPaddingLeft() - hourLabelPaint.getTextSize() * 2) / trainingWeek.getTrainingDays().length;
 	}
 
+	private Training getAt(float x, float y) {
+		for(TrainingDay day : trainingWeek.getTrainingDays()) {
+			for(Training training : day.getTrainings()) {
+				if(training.getDrawable().contains(x, y)) {
+					return training;
+				}
+			}
+		}
+
+		return null;
+	}
+
 	private float getHourDrawY(float hour) {
 		if(hour < minHour || hour > maxHour) {
 			StringBuilder warn = new StringBuilder("Invalid hour: \n");
@@ -162,5 +183,20 @@ public class TrainingCalendarView extends View {
 		calculateDrawSizes();
 
 		invalidate();
+	}
+
+	private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+		@Override
+		public boolean onDown(MotionEvent e) {
+			Training training = getAt(e.getX(), e.getY());
+
+			if(training != null) {
+				Log.v(MainActivity.LOG_TAG, String.format("Touched training: from %s to %s", training.getStartTime().getTime(), training.getEndTime().getTime()));
+				return true;
+			}
+
+			return false;
+		}
 	}
 }
