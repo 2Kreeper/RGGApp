@@ -2,7 +2,7 @@ package eu.barononline.rggapp.views;
 
 import android.view.MotionEvent;
 
-import eu.barononline.rggapp.models.Training;
+import eu.barononline.rggapp.models.training.Training;
 
 public interface ITrainingTouchListener {
 

@@ -1,5 +1,7 @@
 package eu.barononline.rggapp;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class BaseActivity extends AppCompatActivity {
+
+	private static final Uri RGG_DIRECTIVE_URI = Uri.parse("http://www.rggerresheim.de/media/rggerresheim_direktive.pdf");
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,9 +35,12 @@ public class BaseActivity extends AppCompatActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings) {
-			return true;
+		switch (item.getItemId()) {
+			case R.id.action_directive:
+				startActivity(new Intent(
+						Intent.ACTION_VIEW, RGG_DIRECTIVE_URI
+				));
+				return true;
 		}
 
 		return super.onOptionsItemSelected(item);

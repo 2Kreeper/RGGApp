@@ -1,21 +1,25 @@
 package eu.barononline.rggapp.models;
 
+import android.content.res.Resources;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.sql.Time;
 import java.util.GregorianCalendar;
 
+import eu.barononline.rggapp.models.training.Training;
+
 public class TrainingWeek {
 
 	private TrainingDay[] trainingDays;
 
-	public TrainingWeek(JSONArray arr) {
+	public TrainingWeek(JSONArray arr, Resources resources) {
 		trainingDays = new TrainingDay[arr.length()];
 
 		for(int i = 0; i < arr.length(); i++) {
 			try {
-				trainingDays[i] = new TrainingDay(arr.getJSONObject(i));
+				trainingDays[i] = new TrainingDay(arr.getJSONObject(i), resources);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -49,7 +53,7 @@ public class TrainingWeek {
 
 		for(TrainingDay day : trainingDays) {
 			for(Training training : day.getTrainings()) {
-				if(training.getEndTime().getTime().compareTo(latest.getTime()) > 0) {
+				if(training.getStartTime().getTime().compareTo(latest.getTime()) > 0) {
 					latest = training.getEndTime();
 				}
 			}

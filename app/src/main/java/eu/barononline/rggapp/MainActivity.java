@@ -1,25 +1,23 @@
 package eu.barononline.rggapp;
 
-import android.support.constraint.ConstraintLayout;
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.RelativeLayout;
 
-import eu.barononline.rggapp.fragments.EventsFragment;
-import eu.barononline.rggapp.fragments.TrainingTimesFragment;
+import eu.barononline.rggapp.fragments.events.EventsFragment;
+import eu.barononline.rggapp.fragments.trainingtimes.TrainingTimesFragment;
 
 public class MainActivity extends BaseActivity {
 
 	public static final String LOG_TAG = "eu.barononline.rggapp";
+
+	private static Resources.Theme appTheme;
+	public static Resources.Theme getAppTheme() { return appTheme; }
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -43,6 +41,8 @@ public class MainActivity extends BaseActivity {
 		setContentView(R.layout.activity_main);
 		super.onCreate(savedInstanceState);
 
+		appTheme = getAppTheme();
+
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the activity.
 		sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -52,6 +52,11 @@ public class MainActivity extends BaseActivity {
 		viewPager.setAdapter(sectionsPagerAdapter);
 
 		tabLayout = findViewById(R.id.tab_layout);
+
+		//prevent toolbar from collapsing when scrolling
+		AppBarLayout.LayoutParams appBarParams = (AppBarLayout.LayoutParams) findViewById(R.id.toolbar).getLayoutParams();
+		appBarParams.setScrollFlags(0);
+		findViewById(R.id.toolbar).setLayoutParams(appBarParams);
 
 		viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 		tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

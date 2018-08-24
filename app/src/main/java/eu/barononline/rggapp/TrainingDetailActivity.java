@@ -1,13 +1,11 @@
 package eu.barononline.rggapp;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import eu.barononline.rggapp.models.Training;
+import eu.barononline.rggapp.models.training.Training;
 
 public class TrainingDetailActivity extends BaseActivity {
 
@@ -21,7 +19,7 @@ public class TrainingDetailActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 
 		try {
-			training = new Training(new JSONObject(getIntent().getStringExtra(TRAINING_KEY)));
+			training = new Training(new JSONObject(getIntent().getStringExtra(TRAINING_KEY)), getResources());
 		} catch (JSONException e) {
 			e.printStackTrace();
 			finish();

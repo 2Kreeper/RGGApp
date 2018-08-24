@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">RGG App</string>
-    <string name="title_activity_tabbed_test">TabbedActivityTest</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="app_name_with_index">RGG App (%1$d/%2$d)</string>
 
     <string name="training_times">Training Times</string>
     <string name="events">Events</string>
@@ -15,4 +14,26 @@
     <string name="info_loading">Loading...</string>
     <string name="training_trainer_label">Trainer</string>
     <string name="training_type_label">Type</string>
+    <string name="date_format">%1$02d:%2$02d:%3$02d</string>
+
+    <string name="ok">Ok</string>
+
+    <string name="trainging_supervision">Supervision</string>
+    <string name="trainging_regatta">Regatta</string>
+    <string name="trainging_beginner">Beginners</string>
+    <string name="desc_location">Location</string>
+    <string name="desc_time">Time</string>
+
+    <string-array name="weekdays_short">
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
+    </string-array>
+
+   <string name="previous">Previous</string>
+   <string name="next">Next</string>
 </resources>

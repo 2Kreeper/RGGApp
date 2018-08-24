@@ -18,9 +18,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import eu.barononline.rggapp.MainActivity;
-import eu.barononline.rggapp.models.Training;
-import eu.barononline.rggapp.models.TrainingDay;
-import eu.barononline.rggapp.models.TrainingWeek;
+import eu.barononline.rggapp.R;
+import eu.barononline.rggapp.models.training.Training;
+import eu.barononline.rggapp.models.training.TrainingDay;
+import eu.barononline.rggapp.models.training.TrainingWeek;
 import eu.barononline.rggapp.services.IReceiver;
 import eu.barononline.rggapp.services.TrainingWeekFetcher;
 import eu.barononline.rggapp.util.DateUtil;
@@ -48,7 +49,7 @@ public class TrainingCalendarView extends View {
 		hourLineDividerPaint.setStrokeWidth(2);
 		hourLineDividerPaint.setColor(Color.GRAY);
 
-		gestureDetector = new GestureDetectorCompat(getContext(), new GestureListener());
+		gestureDetector = new GestureDetectorCompat(context, new GestureListener());
 
 		refresh(null);
 	}
@@ -59,7 +60,7 @@ public class TrainingCalendarView extends View {
 			public void onReceive(@NonNull TrainingWeek obj) {
 				setTrainingWeek(obj);
 			}
-		}, onFinishedLoading).execute();
+		}, onFinishedLoading, getResources()).execute();
 	}
 
 	@Override
@@ -80,6 +81,7 @@ public class TrainingCalendarView extends View {
 		if(trainingWeek == null)
 			return;
 
+		//hour labels + horizontal dividers
 		for(int hour = minHour; hour < maxHour + 1; hour++) {
 			float hourY = getHourDrawY(hour);
 
@@ -88,32 +90,36 @@ public class TrainingCalendarView extends View {
 					width - getPaddingRight(), hourY - (0.5f * hourLabelPaint.getTextSize()), hourLineDividerPaint);
 		}
 
+		//day labels + vertical dividers
+		String[] days = getResources().getStringArray(R.array.weekdays_short);
 		for(int i = 0; i < 8; i++) {
 			float x = i * trainingWidth + getPaddingLeft() + hourLabelPaint.getTextSize() * 2 - hourLineDividerPaint.getStrokeWidth();
+			float startY = hourLabelPaint.getTextSize() / 2f + hourLabelPaint.getTextSize();
 
-			canvas.drawLine(x, hourLabelPaint.getTextSize() / 2f, x, height - (hourLabelPaint.getTextSize() / 2f), hourLineDividerPaint);
-		}
+			canvas.drawLine(x, startY, x, height - (hourLabelPaint.getTextSize() / 2f), hourLineDividerPaint);
+			try {
+                String day = days[i];
+                canvas.drawText(day, x + hourLabelPaint.getTextSize(), startY - hourLabelPaint.getTextSize() / 2f, hourLabelPaint);
+            } catch (ArrayIndexOutOfBoundsException e) {
+            }
+        }
 
-		drawTrainings(canvas, getPaddingLeft() + hourLabelPaint.getTextSize() * 2f - 1, width - getPaddingRight(), hourLabelPaint.getTextSize() / 2f + 5, height - (hourLabelPaint.getTextSize() / 2f));
+		drawTrainings(canvas, getPaddingLeft() + hourLabelPaint.getTextSize() * 2f - 1);
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		gestureDetector.onTouchEvent(event);
-		return super.onTouchEvent(event);
+	public boolean dispatchTouchEvent(MotionEvent event) {
+		return gestureDetector.onTouchEvent(event);
 	}
 
-	private void drawTrainings(Canvas canvas, float minX, float maxX, float minY, float maxY) {
+	private void drawTrainings(Canvas canvas, float xOffset) {
 		int dayIndex = 0;
 		for(TrainingDay day : trainingWeek.getTrainingDays()) {
-			int trainingIndex = 0;
 			for(Training training : day.getTrainings()) {
-				training.getDrawable().onDraw(canvas, minX + dayIndex * trainingWidth,
-						getHourDrawY(DateUtil.getHours(training.getStartTime())) - hourLabelPaint.getTextSize() * 0.5f,
+				training.getDrawable().onDraw(canvas, xOffset + dayIndex * trainingWidth,
+						getHourDrawY(DateUtil.getTimeInHours(training.getStartTime())) - hourLabelPaint.getTextSize() * 0.5f,
 						trainingWidth,
-						getTrainingHeight(training.getDurationInHours()));
-
-				trainingIndex++;
+						getTrainingHeight(training));
 			}
 
 			dayIndex++;
@@ -126,21 +132,15 @@ public class TrainingCalendarView extends View {
 
 		GregorianCalendar earliestTime = trainingWeek.getEarliestTime(), latestTime = trainingWeek.getLatestTime();
 
-		Log.v(MainActivity.LOG_TAG, "Latest hour: " + latestTime.get(Calendar.HOUR_OF_DAY));
-
 		minHour = earliestTime.get(Calendar.HOUR_OF_DAY);
-		if(earliestTime.get(Calendar.MINUTE) > 0) {
-			minHour++;
-		}
-
 		maxHour = latestTime.get(Calendar.HOUR_OF_DAY);
-		if(latestTime.get(Calendar.MINUTE) > 0) {
+		if(latestTime.get(Calendar.MINUTE) > 0 || latestTime.get(Calendar.SECOND) > 0) {
 			maxHour++;
 		}
 
 		int itemCount = (maxHour - minHour + 1);
 
-		trainingHeight = (height - itemCount * hourLabelPaint.getTextSize()) / (itemCount - 1);
+		trainingHeight = (height - itemCount * hourLabelPaint.getTextSize() - hourLabelPaint.getTextSize()) / (itemCount - 1);
 		trainingWidth = (width - getPaddingLeft() - hourLabelPaint.getTextSize() * 2) / trainingWeek.getTrainingDays().length;
 	}
 
@@ -158,22 +158,23 @@ public class TrainingCalendarView extends View {
 
 	private float getHourDrawY(float hour) {
 		if(hour < minHour || hour > maxHour) {
-			StringBuilder warn = new StringBuilder("Invalid hour: \n");
+			StringBuilder warn = new StringBuilder("Invalid hour: " + hour + "f\n");
 			for(StackTraceElement element : Thread.currentThread().getStackTrace()) {
 				warn.append("\t\t" + element.toString() + "\n");
 			}
 			Log.w(MainActivity.LOG_TAG, warn.toString());
-			return -1;
 		}
 
 		float i = hour - minHour;
 		float y = (i + 1) * hourLabelPaint.getTextSize() + i * trainingHeight;
 
-		return y;
+		return y  + hourLabelPaint.getTextSize();
 	}
 
-	private float getTrainingHeight(float duration) {
-		return (getHourDrawY(minHour + 1) - getHourDrawY(minHour)) * duration;
+	private float getTrainingHeight(Training training) {
+		//return (getHourDrawY(minHour + 1) - getHourDrawY(minHour)) * duration;
+		return getHourDrawY(DateUtil.getTimeInHours(training.getEndTime())) -
+				getHourDrawY(DateUtil.getTimeInHours(training.getStartTime()));
 	}
 
 	public TrainingWeek getTrainingWeek() {
@@ -193,17 +194,23 @@ public class TrainingCalendarView extends View {
 
 	private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
+		private Training selected;
+
 		@Override
 		public boolean onDown(MotionEvent e) {
-			Training training = getAt(e.getX(), e.getY());
+			selected = getAt(e.getX(), e.getY());
 
-			if(training != null) {
+			return selected != null;
+		}
+
+		@Override
+		public boolean onSingleTapUp(MotionEvent e) {
+			if(selected != null) {
 				for(ITrainingTouchListener listener : trainingTouchListeners) {
-					listener.onTrainingTouch(training, e);
+					listener.onTrainingTouch(selected, e);
 				}
 				return true;
 			}
-
 			return false;
 		}
 	}
