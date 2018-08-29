@@ -1,22 +1,14 @@
 package eu.barononline.rggapp.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.json.JSONException;
-
-import eu.barononline.rggapp.MainActivity;
 import eu.barononline.rggapp.R;
-import eu.barononline.rggapp.models.TrainingWeek;
-import eu.barononline.rggapp.services.IReceiver;
-import eu.barononline.rggapp.services.TrainingWeekFetcher;
 import eu.barononline.rggapp.views.TrainingCalendarView;
 
 public class TrainingTimesFragment extends Fragment {

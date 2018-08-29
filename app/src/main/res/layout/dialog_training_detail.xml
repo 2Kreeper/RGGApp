@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/fake_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="74dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/training_type_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/appbar_padding_top"
+            android:text="@string/info_loading"
+            android:textColor="?android:attr/textColorPrimaryInverse"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/from_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/training_detail_label_margin_start"
+        android:layout_marginTop="8dp"
+        android:text="@string/training_from_date_label"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/from_display"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/from_display" />
+
+    <TextView
+        android:id="@+id/to_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/training_detail_label_margin_start"
+        android:layout_marginTop="@dimen/training_detail_label_margin_top"
+        android:text="@string/training_to_date_label"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/from_label" />
+
+    <TextView
+        android:id="@+id/trainer_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/training_detail_label_margin_start"
+        android:layout_marginTop="@dimen/training_detail_label_margin_top"
+        android:text="@string/training_trainer_label"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/to_label" />
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barrier5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="from_label,to_label,trainer_label"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="384dp" />
+
+    <TextView
+        android:id="@+id/from_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/training_detail_label_margin_end"
+        android:layout_marginStart="@dimen/info_margin_left"
+        android:layout_marginTop="@dimen/training_detail_label_margin_top"
+        android:text="@string/info_loading"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/barrier5"
+        app:layout_constraintTop_toBottomOf="@+id/fake_toolbar" />
+
+    <TextView
+        android:id="@+id/to_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/training_detail_label_margin_end"
+        android:layout_marginStart="@dimen/info_margin_left"
+        android:text="@string/info_loading"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/to_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/barrier5"
+        app:layout_constraintTop_toTopOf="@+id/to_label" />
+
+    <TextView
+        android:id="@+id/trainer_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/training_detail_label_margin_end"
+        android:layout_marginStart="@dimen/info_margin_left"
+        android:text="@string/info_loading"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/trainer_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/barrier5"
+        app:layout_constraintTop_toTopOf="@+id/trainer_label" />
+
+</android.support.constraint.ConstraintLayout>

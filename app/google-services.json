@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "552940052898",
+    "firebase_url": "https://rggapp-46770.firebaseio.com",
+    "project_id": "rggapp-46770",
+    "storage_bucket": "rggapp-46770.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:552940052898:android:5e57253027ada84d",
+        "android_client_info": {
+          "package_name": "eu.barononline.rggapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "552940052898-k8ek1vjhhm8t63gvvlco80g7ob6slsh3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eu.barononline.rggapp",
+            "certificate_hash": "ab660b986cfc7c4a6bbc983b150d02bcba6c41a8"
+          }
+        },
+        {
+          "client_id": "552940052898-oadrsci4ks150ade4h4emcbgmqjlibu2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9CTkPrPulR5y8leJe-ccrmX4qqqtiR3U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "552940052898-oadrsci4ks150ade4h4emcbgmqjlibu2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

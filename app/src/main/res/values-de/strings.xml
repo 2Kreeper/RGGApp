@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RGG App</string>
+    <string name="training_times">Trainingszeiten</string>
+    <string name="events">Veranstaltungen</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_directive">Direktive</string>
+    <string name="action_contact">Kontakt</string>
+    <string name="training_from_date_label">Von</string>
+    <string name="training_to_date_label">Bis</string>
+    <string name="info_loading">Lade...</string>
+    <string name="training_trainer_label">Trainer</string>
+    <string name="training_type_label">Trainingsart</string>
+    <string name="ok">Ok</string>
+    <string name="trainging_supervision">Aufsicht</string>
+    <string name="trainging_regatta">Regatta</string>
+    <string name="trainging_beginner">Anfänger</string>
+
+    <string-array name="weekdays_short">
+        <item>Mo</item>
+        <item>Di</item>
+        <item>Mi</item>
+        <item>Do</item>
+        <item>Fr</item>
+        <item>Sa</item>
+        <item>So</item>
+    </string-array>
+</resources>

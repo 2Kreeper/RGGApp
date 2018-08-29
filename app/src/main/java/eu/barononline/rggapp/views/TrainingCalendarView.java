@@ -14,22 +14,25 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import eu.barononline.rggapp.Constants;
 import eu.barononline.rggapp.MainActivity;
 import eu.barononline.rggapp.R;
 import eu.barononline.rggapp.models.training.Training;
 import eu.barononline.rggapp.models.training.TrainingDay;
 import eu.barononline.rggapp.models.training.TrainingWeek;
 import eu.barononline.rggapp.services.IReceiver;
-import eu.barononline.rggapp.services.TrainingWeekFetcher;
+import eu.barononline.rggapp.services.TrainingsFetcher;
 import eu.barononline.rggapp.util.DateUtil;
+import eu.barononline.rggapp.util.TrainingUtil;
 
 public class TrainingCalendarView extends View {
 
 	private int width, height;
-	private TrainingWeek trainingWeek;
+	private Training[] trainings;
 
 	private int minHour, maxHour;
 	private float trainingHeight, trainingWidth;
@@ -55,10 +58,10 @@ public class TrainingCalendarView extends View {
 	}
 
 	public void refresh(@Nullable Runnable onFinishedLoading) {
-		new TrainingWeekFetcher(new IReceiver<TrainingWeek>() {
+		new TrainingsFetcher(new IReceiver<Training[]>() {
 			@Override
-			public void onReceive(@NonNull TrainingWeek obj) {
-				setTrainingWeek(obj);
+			public void onReceive(@NonNull Training[] obj) {
+				setTrainings(obj);
 			}
 		}, onFinishedLoading, getResources()).execute();
 	}
@@ -78,7 +81,7 @@ public class TrainingCalendarView extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		if(trainingWeek == null)
+		if(trainings == null)
 			return;
 
 		//hour labels + horizontal dividers
@@ -113,24 +116,20 @@ public class TrainingCalendarView extends View {
 	}
 
 	private void drawTrainings(Canvas canvas, float xOffset) {
-		int dayIndex = 0;
-		for(TrainingDay day : trainingWeek.getTrainingDays()) {
-			for(Training training : day.getTrainings()) {
-				training.getDrawable().onDraw(canvas, xOffset + dayIndex * trainingWidth,
-						getHourDrawY(DateUtil.getTimeInHours(training.getStartTime())) - hourLabelPaint.getTextSize() * 0.5f,
-						trainingWidth,
-						getTrainingHeight(training));
-			}
-
-			dayIndex++;
+		for(Training training : trainings) {
+			int dayIndex = training.getDayOfWeek();
+			training.getDrawable().onDraw(canvas, xOffset + dayIndex * trainingWidth,
+					getHourDrawY(DateUtil.getTimeInHours(training.getStartTime())) - hourLabelPaint.getTextSize() * 0.5f,
+					trainingWidth,
+					getTrainingHeight(training));
 		}
 	}
 
 	private void calculateDrawSizes() {
-		if(trainingWeek == null)
+		if(trainings == null || Arrays.asList(trainings).contains(null))
 			return;
 
-		GregorianCalendar earliestTime = trainingWeek.getEarliestTime(), latestTime = trainingWeek.getLatestTime();
+		GregorianCalendar earliestTime = TrainingUtil.getEarliestTime(trainings), latestTime = TrainingUtil.getLatestTime(trainings);
 
 		minHour = earliestTime.get(Calendar.HOUR_OF_DAY);
 		maxHour = latestTime.get(Calendar.HOUR_OF_DAY);
@@ -141,15 +140,16 @@ public class TrainingCalendarView extends View {
 		int itemCount = (maxHour - minHour + 1);
 
 		trainingHeight = (height - itemCount * hourLabelPaint.getTextSize() - hourLabelPaint.getTextSize()) / (itemCount - 1);
-		trainingWidth = (width - getPaddingLeft() - hourLabelPaint.getTextSize() * 2) / trainingWeek.getTrainingDays().length;
+		trainingWidth = (width - getPaddingLeft() - hourLabelPaint.getTextSize() * 2) / Constants.WEEK_LENGTH;
 	}
 
 	private Training getAt(float x, float y) {
-		for(TrainingDay day : trainingWeek.getTrainingDays()) {
-			for(Training training : day.getTrainings()) {
-				if(training.getDrawable().contains(x, y)) {
-					return training;
-				}
+		if(trainings == null)
+			return null;
+
+		for(Training training : trainings) {
+			if(training.getDrawable().contains(x, y)) {
+				return training;
 			}
 		}
 
@@ -177,12 +177,8 @@ public class TrainingCalendarView extends View {
 				getHourDrawY(DateUtil.getTimeInHours(training.getStartTime()));
 	}
 
-	public TrainingWeek getTrainingWeek() {
-		return trainingWeek;
-	}
-
-	public void setTrainingWeek(TrainingWeek trainingWeek) {
-		this.trainingWeek = trainingWeek;
+	public void setTrainings(Training[] trainings) {
+		this.trainings = trainings;
 		calculateDrawSizes();
 
 		invalidate();
